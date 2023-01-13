@@ -43,12 +43,12 @@ CloudSegmentation::CloudSegmentation(const ros::NodeHandle& nh,
   region_growing_.setSmoothnessThreshold(smoothness_threshold_rad);
   region_growing_.setCurvatureThreshold(config_.curvature_threshold);
 
-  nh_private_.param<bool>("viewer/enable", visualize_, visualize_);
+  nh_private_.param<bool>("viewer/enable", visualize_, false);
 
   if (visualize_) {
-    std::vector<float> camera_intrinsics_vec;
+    std::vector<float> camera_intrinsics_vec(9, 0.0);
     nh_private.param<std::vector<float>>(
-        "camera_intrinsics", camera_intrinsics_vec, camera_intrinsics_vec);
+        "viewer/camera_intrinsics", camera_intrinsics_vec, camera_intrinsics_vec);
 
     Eigen::Matrix3f camera_intrinsics =
         Eigen::Map<Eigen::Matrix<float, 3, 3, Eigen::RowMajor>>(
@@ -58,7 +58,7 @@ CloudSegmentation::CloudSegmentation(const ros::NodeHandle& nh,
                                      camera_intrinsics, &colored_cloud_);
 
     nh_private_.param<bool>("viewer/write_frames_to_file",
-                            write_frames_to_file_, write_frames_to_file_);
+                            write_frames_to_file_, false);
   }
 }
 
